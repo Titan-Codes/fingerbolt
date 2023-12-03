@@ -74,35 +74,36 @@ def create_window_instance():
     heading.place(x=400, y=100)
     
     typing_speed = stop_typing_speed()
-
-    f= open("scores.txt","r+")
-    score = f.read()
-    if score =="":
-
-     
-        f.write(str(typing_speed))
-        score = typing_speed
+    
         
-    elif int(score) < typing_speed:
-        f.write(str(typing_speed))
+    score = 0  
+
+    try:
+        with open("scores.txt", "r+") as file:
+            content = file.read()
+            if content:
+                score = int(content)
+            
+            if typing_speed > score:
+                file.seek(0)
+                file.truncate()
+                file.write(str(typing_speed))
+    except FileNotFoundError:
+        
+        with open("scores.txt", "w") as file:
+            file.write(str(score))
+
     
-    
-    f.close()    
     info = Label(window, text=f"Wpm: {typing_speed}WPM \n Accuracy: {int(check_accuracy())}% \n Total Characters: {len(paragraph)} \n Highest Speed: {score}WPM", bg="black", fg="white", font=("Cascadia Code Semibold", 20))
-    info.place(x=200,y=200)
-    
+    info.place(x=200, y=200)
 
     credits = Label(window,text="Made by: Vivek Gupta,Vedansh Sharma,Parth Wadhwa",font = ("Cascadia Code Semibold",20),bg="black",fg="white") 
     credits.place(x=70,y=500)
     
-    
-    
-
-
     change_paragraph()
     # create_window()
 
-# screen_width = root.winfo_screenwidth()
+# screen_width = root.winfo_screenwidth()S
 # screen_height = root.winfo_screenheight()
 
 
@@ -146,8 +147,7 @@ icon2 = ImageTk.PhotoImage(image2)
 
 result = Button(root,image = icon2,bg="black",fg="white",width=150,height=80,font=('Cascadia Code Semibold',10),borderwidth=0, command=create_window)
 result.place(x=600,y=600)
-input_area.bind("<FocusIn>", lambda event: start_typing_speed())  # Start recording typing speed
-# input_area.bind("<FocusOut>", lambda event: create_window())  # Display typing speed when focus is lost
+input_area.bind("<FocusIn>", lambda event: start_typing_speed())  
 
 
 
